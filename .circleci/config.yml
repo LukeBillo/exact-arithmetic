@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: spritsail/alpine-cmake:3.9
+
+    steps:
+      - run: 
+          name: Install Git
+          command: 'apk add git'
+
+      - run:
+          name: Install Catch2
+          command: 'git clone https://github.com/catchorg/Catch2.git && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && cmake --build build/ --target install && cd /'
+      
+      - checkout
+
+      - run:
+          name: Build
+          command: 'cmake -H. -Bbuild'
+
+      - run:
+          name: Create binaries
+          command: 'cmake --build build'
+
+      - run:
+          name: Run unit tests
+          command: './bin/rational-tests'
