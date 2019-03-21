@@ -25,4 +25,4 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: './bin/rational-tests'
+          command: './build/rational-tests'
