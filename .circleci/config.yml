@@ -5,10 +5,13 @@ jobs:
       - image: spritsail/alpine-cmake:3.9
 
     steps:
+<<<<<<< HEAD
       - run: 
           name: Install Git
           command: 'apk add git'
 
+=======
+>>>>>>> 2ba4a6a7f48e579ba078d423dfb79ae657228e12
       - run:
           name: Install Catch2
           command: 'git clone https://github.com/catchorg/Catch2.git && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && cmake --build build/ --target install && cd /'
