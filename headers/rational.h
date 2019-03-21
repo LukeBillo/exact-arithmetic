@@ -28,7 +28,7 @@ namespace ExactArithmetic
 
       /*  Accepts either a pair of integers separated by '/', or a single integer
        *  followed by a character other than '/'.
-       *  For any other input, throws a std::invalid_argument exception.
+       *  For any other input , throws a std::invalid_argument exception.
        */
       explicit Rational(const std::string &);
 

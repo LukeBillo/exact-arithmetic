@@ -16,7 +16,7 @@ find_package(Catch2 REQUIRED)
 
 
 # TESTING
-add_executable(rational-tests headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp test/rationals-can-be-equated.cpp test/main.cpp)
+add_executable(rational-tests headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rationals-can-be-equated.cpp spec/main.cpp spec/rationals-can-be-constructed.cpp spec/integers-can-be-converted-to-rationals.cpp spec/doubles-can-be-converted-to-rationals.cpp)
 target_link_libraries(rational-tests Catch2::Catch2)
 
 include(CTest)
