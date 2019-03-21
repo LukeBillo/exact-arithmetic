@@ -11,12 +11,26 @@ include_directories("${PROJECT_SOURCE_DIR}/headers")
 add_executable(rational-interactive src/rational-interactive src/rational src/gcd)
 add_executable(rational-cmdline src/rational-cmdline src/rational src/gcd)
 
+set_target_properties(rational-interactive
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+
+set_target_properties(rational-cmdline
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+
 # PACKAGES #
 find_package(Catch2 REQUIRED)
 
 
 # TESTING
-add_executable(rational-tests headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp test/rationals-can-be-equated.cpp test/main.cpp)
+add_executable(rational-tests headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rationals-can-be-equated.cpp spec/main.cpp)
 target_link_libraries(rational-tests Catch2::Catch2)
 
 include(CTest)
