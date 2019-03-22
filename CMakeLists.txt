@@ -11,6 +11,20 @@ include_directories("${PROJECT_SOURCE_DIR}/headers")
 add_executable(rational-interactive src/rational-interactive src/rational src/gcd)
 add_executable(rational-cmdline src/rational-cmdline src/rational src/gcd)
 
+set_target_properties(rational-interactive
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+
+set_target_properties(rational-cmdline
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+
 # PACKAGES #
 find_package(Catch2 REQUIRED)
 

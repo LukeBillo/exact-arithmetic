@@ -6,9 +6,13 @@ jobs:
 
     steps:
       - run:
+          name: Install Git
+          command: 'apk add git'
+
+      - run:
           name: Install Catch2
-          command: 'git clone https://github.com/catchorg/Catch2.git && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && cmake --build build/ --target install && cd /'
-      
+          command: 'mkdir /Catch2 && git clone https://github.com/catchorg/Catch2.git /Catch2 && cmake /Catch2 -B/Catch2/build -H/Catch2 -DBUILD_TESTING=OFF && cmake --build /Catch2/build/ --target install'
+
       - checkout
 
       - run:
@@ -21,4 +25,11 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: './bin/rational-tests'
+          command: './build/rational-tests'
+
+      - run:
+          name: Create artifacts
+          command: "mkdir /artifacts && cp ./build/bin/* /artifacts"
+
+      - store_artifacts:
+          path: /artifacts
