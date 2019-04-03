@@ -5,9 +5,11 @@
 using ExactArithmetic::Rational;
 using ExactArithmetic::DivideByZeroError;
 
+using namespace Catch::Generators;
+
 SCENARIO("Integers can be converted to rationals", "[rational]") {
     GIVEN("Any integer") {
-        int i = GENERATE(-1, 0, 1, 2, 3, 4, 5);
+        int i = GENERATE(take(10, random(-10, 10)));
 
         WHEN("Calling the conversion constructor") {
             Rational converted = Rational(i);

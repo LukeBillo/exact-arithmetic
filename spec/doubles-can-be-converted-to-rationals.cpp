@@ -5,10 +5,11 @@
 using ExactArithmetic::Rational;
 using ExactArithmetic::DivideByZeroError;
 
+using namespace Catch::Generators;
+
 SCENARIO("Doubles can be converted to rationals", "[rational]") {
     GIVEN("Any double") {
-        // todo: use take extensions to add to test cases (both double and int)
-        double i = GENERATE(-1, 0, 1, 2, 3, 4, 5);
+        double i = GENERATE(take(10, random(-10.0l, 10.0l)));
 
         WHEN("Calling the conversion constructor") {
             Rational converted = Rational(i);
