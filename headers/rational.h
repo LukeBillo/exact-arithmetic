@@ -28,7 +28,7 @@ namespace ExactArithmetic
 
       /*  Accepts either a pair of integers separated by '/', or a single integer
        *  followed by a character other than '/'.
-       *  For any other input, throws a std::invalid_argument exception.
+       *  For any other input , throws a std::invalid_argument exception.
        */
       explicit Rational(const std::string &);
 
@@ -59,6 +59,9 @@ namespace ExactArithmetic
       // Friend declarations
       friend std::ostream & operator<<(std::ostream &, const Rational &);
       friend std::istream & operator>>(std::istream &, Rational &);
+
+      long long int getNumerator();
+      long long int getDenominator();
 
     private:
       /* A rational number can be represented as a ratio between two integers:
