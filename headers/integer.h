@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include <iostream>
+#include <memory>
 
 namespace ExactArithmetic
 {
@@ -55,6 +56,7 @@ namespace ExactArithmetic
       Integer operator--(int); // post-decrement
 
       std::string toString() const;
+      int toInt();
 
       // Friend declarations
       friend std::ostream & operator<<(std::ostream &, const Integer &);
@@ -64,7 +66,7 @@ namespace ExactArithmetic
       using Digit = short int;
 
       // The integer is represented as a list of digits.
-      std::list<Digit> digits {};
+      std::unique_ptr<std::list<Digit>> digits = std::make_unique<std::list<Digit>>();
   };
 
   std::ostream & operator<<(std::ostream &, const Integer &);

@@ -30,7 +30,7 @@ find_package(Catch2 REQUIRED)
 
 
 # TESTING
-add_executable(exact-arithmetic-tests spec/rational/main.cpp headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rational/rationals-can-be-equated.cpp spec/rational/rationals-can-be-constructed.cpp spec/rational/integers-can-be-converted-to-rationals.cpp spec/rational/doubles-can-be-converted-to-rationals.cpp spec/helpers/RandomRationalGenerator.cpp spec/helpers/RandomRationalGenerator.h spec/rational/rationals-can-be-added.cpp spec/rational/rationals-can-be-multiplied.cpp spec/rational/rationals-can-be-divided.cpp spec/rational/rationals-can-be-subtracted.cpp spec/rational/gcd-functions-correctly.cpp)
+add_executable(exact-arithmetic-tests spec/main.cpp headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rational/rationals-can-be-equated.cpp spec/rational/rationals-can-be-constructed.cpp spec/rational/integers-can-be-converted-to-rationals.cpp spec/rational/doubles-can-be-converted-to-rationals.cpp spec/helpers/RandomRationalGenerator.cpp spec/helpers/RandomRationalGenerator.h spec/rational/rationals-can-be-added.cpp spec/rational/rationals-can-be-multiplied.cpp spec/rational/rationals-can-be-divided.cpp spec/rational/rationals-can-be-subtracted.cpp spec/rational/gcd-functions-correctly.cpp spec/integer/integers-can-be-constructed.cpp src/integer.cpp)
 target_link_libraries(exact-arithmetic-tests Catch2::Catch2)
 
 include(CTest)
