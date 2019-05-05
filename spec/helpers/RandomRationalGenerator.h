@@ -11,10 +11,9 @@ using Catch::Generators::GeneratorWrapper;
 namespace SpecHelpers {
     class RandomRationalGenerator : public IGenerator<Rational> {
     public:
-        RandomRationalGenerator(int lowest, int highest, bool allowZeroDenominator) :
+        RandomRationalGenerator(int lowest, int highest) :
                 generator(std::random_device{}()),
-                distribution(lowest, highest),
-                allowZeroDenominator(allowZeroDenominator)
+                distribution(lowest, highest)
         {
             static_cast<void>(next());
         }
@@ -27,11 +26,10 @@ namespace SpecHelpers {
         std::minstd_rand generator;
         std::uniform_int_distribution<> distribution;
 
-        bool allowZeroDenominator;
         Rational current_rational;
     };
 
-    GeneratorWrapper<Rational> randomRational(int low, int high, bool allowZeroDenominator);
+    GeneratorWrapper<Rational> randomRational(int low, int high);
 }
 
 #endif

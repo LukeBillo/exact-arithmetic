@@ -9,10 +9,8 @@ bool SpecHelpers::RandomRationalGenerator::next() {
     int numerator = distribution(generator);
     int denominator = distribution(generator);
 
-    if (!allowZeroDenominator) {
-        while (denominator == 0) {
-            denominator = distribution(generator);
-        }
+    while (denominator == 0) {
+        denominator = distribution(generator);
     }
 
     current_rational = Rational(numerator, denominator);
@@ -20,8 +18,8 @@ bool SpecHelpers::RandomRationalGenerator::next() {
 }
 
 
-GeneratorWrapper<Rational> SpecHelpers::randomRational(int low, int high, bool allowZeroDenominator) {
+GeneratorWrapper<Rational> SpecHelpers::randomRational(int low, int high) {
     return GeneratorWrapper<Rational>(
-            std::unique_ptr<IGenerator<Rational>>(new RandomRationalGenerator(low, high, allowZeroDenominator))
+            std::unique_ptr<IGenerator<Rational>>(new RandomRationalGenerator(low, high))
     );
 }

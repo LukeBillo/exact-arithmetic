@@ -60,6 +60,9 @@ namespace ExactArithmetic
       friend std::ostream & operator<<(std::ostream &, const Rational &);
       friend std::istream & operator>>(std::istream &, Rational &);
 
+      long long int getNumerator();
+      long long int getDenominator();
+
     private:
       /* A rational number can be represented as a ratio between two integers:
          called the numerator and denominator.

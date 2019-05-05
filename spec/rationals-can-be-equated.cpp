@@ -7,7 +7,7 @@ using SpecHelpers::RandomRationalGenerator;
 using SpecHelpers::randomRational;
 
 SCENARIO("Rationals can be equated", "[rational]") {
-    Rational rational1 = GENERATE(take(20, randomRational(-10, 10, false)));
+    Rational rational1 = GENERATE(take(20, randomRational(-10, 10)));
 
     GIVEN("Two equal rationals exist") {
         Rational rational2 = rational1;

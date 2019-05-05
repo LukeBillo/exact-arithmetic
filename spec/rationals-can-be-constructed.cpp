@@ -40,8 +40,8 @@ SCENARIO("Rationals can be constructed", "[rational]") {
 
     GIVEN("Rationals can be constructed with a given denominator and numerator") {
         WHEN("Constructing the rational") {
-            int numerator = GENERATE(take(10, random(1, 10)));
-            int denominator = GENERATE(take(10, random(1, 10)));
+            int numerator = GENERATE(take(5, random(1, 10)));
+            int denominator = GENERATE(take(5, random(1, 10)));
 
             THEN("The rational is successfully constructed") {
                 REQUIRE_NOTHROW(Rational(numerator, denominator));
@@ -60,7 +60,7 @@ SCENARIO("Rationals can be constructed", "[rational]") {
 
     GIVEN("Rationals can be constructed with std::string") {
         WHEN("Constructing a rational from a valid std::string") {
-            auto convertFrom = GENERATE(as<std::string>{}, "2", "1", "0", "2/3", "1/5");
+            auto convertFrom = GENERATE(as<std::string>{}, "2", "1", "0", "2/3", "1/5", "11/2", "150/17");
 
             Rational converted = Rational(convertFrom);
 
@@ -73,9 +73,10 @@ SCENARIO("Rationals can be constructed", "[rational]") {
         }
 
         WHEN("Constructing a rational from an invalid std::string") {
-            auto convertFrom = GENERATE(as<std::string>{}, "a/b", "1/a", "a/1", "a", "ff", "0xff");
+            auto convertFrom = GENERATE(as<std::string>{}, "a/b", "a/1", "a", "ff", "0xff");
 
             THEN("An exception is thrown") {
+                INFO("Constructing from string: " + convertFrom)
                 REQUIRE_THROWS_AS(Rational(convertFrom), std::invalid_argument);
             }
         }

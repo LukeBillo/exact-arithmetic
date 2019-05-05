@@ -37,7 +37,7 @@ namespace ExactArithmetic
     {
         std::istringstream iss(str);
         iss >> *this;
-        if (! iss.eof()) throw std::invalid_argument(str + " cannot be parsed as a Rational.");
+        if (! iss.eof()) { throw std::invalid_argument(str + " cannot be converted to a Rational."); }
     }
 
     bool Rational::operator==(const Rational & r) const
@@ -88,12 +88,23 @@ namespace ExactArithmetic
      */
     Rational Rational::operator+(const Rational & r) const
     {
-        return Rational(num + r.num, denom + r.denom);
+        // Adding rationals:
+        // (a * d) + (b * c) / (b * d)
+
+        long long int newNumerator = (num * r.denom) + (denom * r.num);
+        long long int newDenominator = denom * r.denom;
+
+        return Rational(newNumerator, newDenominator);
     }
 
     Rational Rational::operator-(const Rational & r) const
     {
-        return Rational(num - r.num, denom - r.denom);
+        // Subtracting rationals:
+        // (a * d) - (b * c) / (b * d)
+        long long int newNumerator = (num * r.denom) - (denom * r.num);
+        long long int newDenominator = denom * r.denom;
+
+        return Rational(newNumerator, newDenominator);
     }
 
     Rational Rational::operator*(const Rational & r) const
@@ -103,7 +114,10 @@ namespace ExactArithmetic
 
     Rational Rational::operator/(const Rational & r) const
     {
-        return Rational(num / r.denom, denom / r.num);
+        // Dividing rationals:
+        // (a * d) / (b * c)
+
+        return Rational(num * r.denom, denom * r.num);
     }
 
     Rational & Rational::operator+=(const Rational & r)
@@ -202,6 +216,14 @@ namespace ExactArithmetic
         }
         r.normalise();
         return input;
+    }
+
+    long long int Rational::getNumerator() {
+        return num;
+    }
+
+    long long int Rational::getDenominator() {
+        return denom;
     }
 
 }

@@ -30,7 +30,7 @@ find_package(Catch2 REQUIRED)
 
 
 # TESTING
-add_executable(rational-tests spec/main.cpp headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rationals-can-be-equated.cpp spec/rationals-can-be-constructed.cpp spec/integers-can-be-converted-to-rationals.cpp spec/doubles-can-be-converted-to-rationals.cpp spec/helpers/RandomRationalGenerator.cpp spec/helpers/RandomRationalGenerator.h)
+add_executable(rational-tests spec/main.cpp headers/rational.h headers/gcd.h src/rational.cpp src/gcd.cpp spec/rationals-can-be-equated.cpp spec/rationals-can-be-constructed.cpp spec/integers-can-be-converted-to-rationals.cpp spec/doubles-can-be-converted-to-rationals.cpp spec/helpers/RandomRationalGenerator.cpp spec/helpers/RandomRationalGenerator.h spec/rationals-can-be-added.cpp spec/rationals-can-be-multiplied.cpp spec/rationals-can-be-divided.cpp spec/rationals-can-be-subtracted.cpp spec/gcd-functions-correctly.cpp)
 target_link_libraries(rational-tests Catch2::Catch2)
 
 include(CTest)
