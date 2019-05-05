@@ -29,7 +29,7 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: './build/rational-tests'
+          command: './build/exact-arithmetic-tests'
 
       - run:
           name: Create artifacts
