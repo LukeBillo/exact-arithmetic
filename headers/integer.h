@@ -55,8 +55,10 @@ namespace ExactArithmetic
       Integer & operator--();  // pre-decrement
       Integer operator--(int); // post-decrement
 
+      // Utility methods for conversion
       std::string toString() const;
       int toInt();
+      unsigned long long toInt64();
 
       // Friend declarations
       friend std::ostream & operator<<(std::ostream &, const Integer &);
