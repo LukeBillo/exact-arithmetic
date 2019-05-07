@@ -32,9 +32,10 @@ ExactArithmetic::Integer::Integer(const std::string& stringInt) {
 
     for (char i : stringInt) {
         // converts ASCII characters to short
-        // numbers 1-9 are 48-57 in ASCII DEC.
+        // numbers 1-9 are 48-57 in ASCII DEC, hence
+        // ASCII_NUMBERS_START = 48.
 
-        short converted = i - 48;
+        short converted = i - ASCII_NUMBERS_START;
 
         // if this isn't a number 1-9, throws exception
         if (converted < 0 || converted > 9)
@@ -77,18 +78,90 @@ bool ExactArithmetic::Integer::operator!=(const ExactArithmetic::Integer& other)
 #pragma endregion ComparisonOperators
 //endregion ComparisonOperators
 
+//region IncrementDecrementOperators
+#pragma region IncrementDecrementOperators
+
+// pre-increment
+ExactArithmetic::Integer& ExactArithmetic::Integer::operator++() {
+    auto digitIterator = digits->rbegin();
+    bool incremented = false;
+
+    while (!incremented) {
+        if (*digitIterator < MAX_DIGIT)
+        {
+            *digitIterator += 1;
+            incremented = true;
+        }
+        else
+        {
+            *digitIterator = 0;
+
+            if (digitIterator == digits->rend()) {
+                digits->push_front(1);
+                incremented = true;
+            }
+        }
+
+        ++digitIterator;
+    }
+
+    return *this;
+}
+
+// post-increment
+ExactArithmetic::Integer ExactArithmetic::Integer::operator++(int) {
+    auto copy = Integer(toString());
+    operator++();
+    return copy;
+}
+
+// pre-decrement
+ExactArithmetic::Integer &ExactArithmetic::Integer::operator--() {
+    auto digitIterator = digits->rbegin();
+    bool decremented = false;
+
+    if (digits->size() == 1 && *digitIterator == 0)
+        return *this;
+
+    while(!decremented) {
+        if (*digitIterator > 0)
+        {
+            *digitIterator -= 1;
+            decremented = true;
+        }
+        else
+        {
+            *digitIterator = MAX_DIGIT;
+
+            if (digitIterator == digits->rend()) {
+                digits->pop_front();
+                decremented = true;
+            }
+        }
+
+        ++digitIterator;
+    }
+
+    return *this;
+}
+
+// post-decrement
+ExactArithmetic::Integer ExactArithmetic::Integer::operator--(int) {
+    auto copy = Integer(toString());
+    operator--();
+    return copy;
+}
+
+#pragma endregion IncrementDecrementOperators
+//endregion IncrementDecrementOperators
+
 //region UtilityConversionFunctions
 #pragma region UtilityConversionFunctions
 
 std::string ExactArithmetic::Integer::toString() const {
     std::stringstream ss;
 
-    // since most significant bit is at the front, can just
-    // iterate through the digits in order like so..
-
-    for (Digit& i : *digits) {
-        ss << i;
-    }
+    ss << *this;
 
     return ss.str();
 }
@@ -109,6 +182,50 @@ unsigned long long ExactArithmetic::Integer::toInt64() {
 
 #pragma endregion UtilityConversionFunctions
 //endregion UtilityConversionFunctions
+
+//region FriendStreamOperators
+#pragma region FriendStreamOperators
+
+std::ostream& ExactArithmetic::operator<<(std::ostream& os, const ExactArithmetic::Integer& integer) {
+    // since most significant bit is at the front, can just
+    // iterate through the digits in order like so..
+
+    for (Integer::Digit& d : *integer.digits) {
+        os << d;
+    }
+
+    return os;
+}
+
+std::istream &ExactArithmetic::operator>>(std::istream& is, ExactArithmetic::Integer& integer) {
+    // erases contents of existing integer and
+    // overwrites with read-in digits.
+    integer.digits->clear();
+
+    char next;
+    is >> next;
+
+    while (!is.eof()) {
+        short converted = next - ASCII_NUMBERS_START;
+
+        if (converted < 0 || converted > 9) {
+            std::string errorMessage = "Invalid argument constructing Integer, reached invalid character ";
+            errorMessage.push_back(next);
+            errorMessage.append(" in operator>>(std::istream&, Integer).");
+
+            throw std::invalid_argument(errorMessage);
+        }
+
+        integer.digits->push_back(converted);
+
+        is >> next;
+    }
+
+    return is;
+}
+
+#pragma region FriendStreamOperators
+//endregion FriendStreamOperators
 
 //region GenericComparisonFunction
 #pragma region GenericComparisonFunction

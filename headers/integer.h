@@ -6,6 +6,9 @@
 #include <iostream>
 #include <memory>
 
+#define ASCII_NUMBERS_START 48
+#define MAX_DIGIT 9
+
 namespace ExactArithmetic
 {
   /*  The Integer class provides integers of unbounded size.
