@@ -1,6 +1,9 @@
 #include <sstream>
 #include "integer.h"
 
+//region Constructors
+#pragma region Constructors
+
 ExactArithmetic::Integer::Integer() {
     digits->push_front(0);
 }
@@ -41,6 +44,42 @@ ExactArithmetic::Integer::Integer(const std::string& stringInt) {
     }
 }
 
+#pragma endregion Constructors
+//endregion constructors
+
+//region ComparisonOperators
+#pragma region ComparisonOperators
+
+bool ExactArithmetic::Integer::operator<(const ExactArithmetic::Integer& other) const {
+    return compare(other) == LT;
+}
+
+bool ExactArithmetic::Integer::operator>(const ExactArithmetic::Integer& other) const {
+    return compare(other) == GT;
+}
+
+bool ExactArithmetic::Integer::operator<=(const ExactArithmetic::Integer& other) const {
+    return compare(other) != GT;
+}
+
+bool ExactArithmetic::Integer::operator>=(const ExactArithmetic::Integer& other) const {
+    return compare(other) != LT;
+}
+
+bool ExactArithmetic::Integer::operator==(const ExactArithmetic::Integer& other) const {
+    return compare(other) == EQ;
+}
+
+bool ExactArithmetic::Integer::operator!=(const ExactArithmetic::Integer& other) const {
+    return !operator==(other);
+}
+
+#pragma endregion ComparisonOperators
+//endregion ComparisonOperators
+
+//region UtilityConversionFunctions
+#pragma region UtilityConversionFunctions
+
 std::string ExactArithmetic::Integer::toString() const {
     std::stringstream ss;
 
@@ -68,40 +107,18 @@ unsigned long long ExactArithmetic::Integer::toInt64() {
     return std::stoull(stringified);
 }
 
-bool ExactArithmetic::Integer::operator==(const ExactArithmetic::Integer& other) const {
-    // can skip checking each digit if sizes differ
-    if (digits->size() != other.digits->size())
-        return false;
+#pragma endregion UtilityConversionFunctions
+//endregion UtilityConversionFunctions
 
-    // otherwise, check each digit...
-    auto thisDigit = digits->begin();
-    auto otherDigit = other.digits->begin();
+//region GenericComparisonFunction
+#pragma region GenericComparisonFunction
 
-    while (thisDigit != digits->end()) {
-        if (*thisDigit != *otherDigit) {
-            return false;
-        }
-
-        ++thisDigit;
-        ++otherDigit;
-    }
-
-    return true;
-}
-
-bool ExactArithmetic::Integer::operator!=(const ExactArithmetic::Integer& other) const {
-    return !operator==(other);
-}
-
-bool ExactArithmetic::Integer::operator<(const ExactArithmetic::Integer& other) const {
+ExactArithmetic::Integer::ComparisonResult ExactArithmetic::Integer::compare(const ExactArithmetic::Integer& other) const {
     auto mismatch = std::mismatch(digits->begin(), digits->end(), other.digits->begin(), other.digits->end(),
-        [](Digit first, Digit second) {
-            return first == second;
-        }
+                                  [](Digit first, Digit second) {
+                                      return first == second;
+                                  }
     );
-
-    auto stringThis = toString();
-    auto stringOther = other.toString();
 
     // how far are each of these from the end / least significant digit?
     auto distanceFromEnd = std::distance(mismatch.first, digits->end());
@@ -110,11 +127,25 @@ bool ExactArithmetic::Integer::operator<(const ExactArithmetic::Integer& other) 
     // if of equal magnitude, i.e. equal distance from end of list
     // then just compare digits...
     if (distanceFromEnd == distanceFromEndOther) {
-        return *mismatch.first < *mismatch.second;
+        auto thisDigit = *mismatch.first;
+        auto otherDigit = *mismatch.second;
+
+        if (thisDigit == otherDigit) {
+            return EQ;
+        }
+
+        return thisDigit < otherDigit ?
+            LT :
+            GT;
     }
 
     // otherwise, find which is of larger magnitude;
     // if index is larger, it is a less significant
     // digit than the other.
-    return distanceFromEnd < distanceFromEndOther;
+    return distanceFromEnd < distanceFromEndOther ?
+            LT :
+            GT;
 }
+
+#pragma endregion GenericComparisonFunction
+//endregion GenericComparisonFunction

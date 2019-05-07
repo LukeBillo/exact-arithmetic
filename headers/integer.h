@@ -42,6 +42,7 @@ namespace ExactArithmetic
       bool operator==(const Integer &) const;
       bool operator!=(const Integer &) const;
 
+
       // Compound Assignment operators
       Integer & operator+=(const Integer &);
       Integer & operator-=(const Integer &);
@@ -66,6 +67,15 @@ namespace ExactArithmetic
 
     private:
       using Digit = short int;
+
+      enum ComparisonResult {
+          LT,
+          EQ,
+          GT
+      };
+
+      // Generic comparison function
+      ComparisonResult compare(const Integer&) const;
 
       // The integer is represented as a list of digits.
       std::unique_ptr<std::list<Digit>> digits = std::make_unique<std::list<Digit>>();
