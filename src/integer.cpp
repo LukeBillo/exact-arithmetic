@@ -6,10 +6,15 @@ ExactArithmetic::Integer::Integer() {
 }
 
 ExactArithmetic::Integer::Integer(unsigned long long int i) {
+    // if already 0, just push 0 and return
+    if (i == 0) {
+        digits->push_front(0);
+        return;
+    }
+
     // iterates in orders of 10, extracting the current digit
     // with modulo and dividing; pushes to front so that the
     // array of digits has most significant digit at the front.
-
     while (i > 0) {
         auto nextDigit = i % 10;
         digits->push_front(nextDigit);
@@ -85,6 +90,31 @@ bool ExactArithmetic::Integer::operator==(const ExactArithmetic::Integer& other)
 }
 
 bool ExactArithmetic::Integer::operator!=(const ExactArithmetic::Integer& other) const {
-    bool areEqual = operator==(other);
-    return !areEqual;
+    return !operator==(other);
+}
+
+bool ExactArithmetic::Integer::operator<(const ExactArithmetic::Integer& other) const {
+    auto mismatch = std::mismatch(digits->begin(), digits->end(), other.digits->begin(), other.digits->end(),
+        [](Digit first, Digit second) {
+            return first == second;
+        }
+    );
+
+    auto stringThis = toString();
+    auto stringOther = other.toString();
+
+    // how far are each of these from the end / least significant digit?
+    auto distanceFromEnd = std::distance(mismatch.first, digits->end());
+    auto distanceFromEndOther = std::distance(mismatch.second, other.digits->end());
+
+    // if of equal magnitude, i.e. equal distance from end of list
+    // then just compare digits...
+    if (distanceFromEnd == distanceFromEndOther) {
+        return *mismatch.first < *mismatch.second;
+    }
+
+    // otherwise, find which is of larger magnitude;
+    // if index is larger, it is a less significant
+    // digit than the other.
+    return distanceFromEnd < distanceFromEndOther;
 }
