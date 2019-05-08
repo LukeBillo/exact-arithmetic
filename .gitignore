@@ -33,4 +33,7 @@
 
 # CLion
 .idea/*
+
+# Build folders
 cmake-build-debug
+[Bb]uild
