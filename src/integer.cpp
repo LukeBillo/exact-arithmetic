@@ -264,5 +264,65 @@ ExactArithmetic::Integer::ComparisonResult ExactArithmetic::Integer::compare(con
             GT;
 }
 
+ExactArithmetic::Integer& ExactArithmetic::Integer::operator+=(const ExactArithmetic::Integer& addition) {
+    auto thisIterator = digits->rbegin();
+    auto additionIterator = addition.digits->rbegin();
+
+    int carry = 0;
+
+    auto DEBUG_CURRENT_INTEGER = toString();
+    auto DEBUG_ADDITION_INTEGER = addition.toString();
+
+    while (additionIterator != addition.digits->rend()) {
+        if (thisIterator == digits->rend())
+        {
+            digits->push_front(*additionIterator);
+            thisIterator = --digits->rend();
+        }
+        else
+        {
+            *thisIterator += *additionIterator;
+        }
+
+        *thisIterator += carry;
+        carry = 0;
+
+        if (*thisIterator > MAX_DIGIT) {
+            // carry is always 1 (*thisIterator / 10)
+            carry = 1;
+            *thisIterator %= 10;
+        }
+
+        ++additionIterator;
+        ++thisIterator;
+    }
+
+    while (carry != 0) {
+        if (thisIterator == digits->rend())
+        {
+            digits->push_front(carry);
+            carry = 0;
+        }
+        else
+        {
+            *thisIterator += carry;
+            carry = 0;
+
+            if (*thisIterator > MAX_DIGIT)
+            {
+                carry = 1;
+                *thisIterator %= 10;
+            }
+        }
+    }
+
+    return *this;
+}
+
+ExactArithmetic::Integer& ExactArithmetic::Integer::operator-=(const ExactArithmetic::Integer &) {
+    // not implemented yet, throws exception temporarily
+    throw "NotImplementedException";
+}
+
 #pragma endregion GenericComparisonFunction
 //endregion GenericComparisonFunction
