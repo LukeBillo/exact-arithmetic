@@ -55,6 +55,16 @@ SCENARIO("Integers can be decremented", "[integer]") {
                 REQUIRE(result.toString() == expected);
             }
         }
+
+        WHEN("Post-decrementing 1000000") {
+            Integer integer = Integer(1000000);
+            Integer& result = --integer;
+
+            THEN("The integer is decremented successfully") {
+                REQUIRE(integer.toInt() == 999999);
+                REQUIRE(result.toInt() == 999999);
+            }
+        }
     }
 
     GIVEN("Integers have post-decrement operator-- implemented") {
@@ -108,6 +118,16 @@ SCENARIO("Integers can be decremented", "[integer]") {
 
                 REQUIRE(ridiculousInteger.toString() == expected_integer);
                 REQUIRE(result.toString() == expected_result);
+            }
+        }
+
+        WHEN("Post-decrementing 1000000") {
+            Integer integer = Integer(1000000);
+            Integer result = integer--;
+
+            THEN("The integer is decremented successfully") {
+                REQUIRE(integer.toInt() == 999999);
+                REQUIRE(result.toInt() == 1000000);
             }
         }
     }

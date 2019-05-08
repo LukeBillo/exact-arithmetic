@@ -5,8 +5,8 @@ using ExactArithmetic::Integer;
 
 SCENARIO("Integers can be compared with the greater than operator", "[integer]") {
     GIVEN("Integers have an operator> implementation") {
-        Integer smaller = GENERATE(take(20, random(0, 1000)));
-        Integer larger = GENERATE(take(20, random(1001, 10000)));
+        Integer smaller = GENERATE(take(10, random(0, 1000)));
+        Integer larger = GENERATE(take(10, random(1001, 10000)));
 
         WHEN("Comparing two integers where the right is larger") {
             bool leftIsLarger = smaller > larger;
@@ -37,8 +37,8 @@ SCENARIO("Integers can be compared with the greater than operator", "[integer]")
     }
 
     GIVEN("Integers have an operator>= implementation") {
-        Integer smaller = GENERATE(take(20, random(0, 1000)));
-        Integer larger = GENERATE(take(20, random(1001, 10000)));
+        Integer smaller = GENERATE(take(10, random(0, 1000)));
+        Integer larger = GENERATE(take(10, random(1001, 10000)));
 
         WHEN("Comparing two integers where the right is larger") {
             bool leftIsLargerOrEqual = smaller >= larger;
