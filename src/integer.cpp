@@ -231,10 +231,12 @@ std::istream &ExactArithmetic::operator>>(std::istream& is, ExactArithmetic::Int
 #pragma region GenericComparisonFunction
 
 ExactArithmetic::Integer::ComparisonResult ExactArithmetic::Integer::compare(const ExactArithmetic::Integer& other) const {
-    auto mismatch = std::mismatch(digits->begin(), digits->end(), other.digits->begin(), other.digits->end(),
-                                  [](Digit first, Digit second) {
-                                      return first == second;
-                                  }
+    auto mismatch = std::mismatch(
+            digits->begin(), digits->end(),
+            other.digits->begin(), other.digits->end(),
+            [](Digit first, Digit second) {
+                return first == second;
+            }
     );
 
     // how far are each of these from the end / least significant digit?
