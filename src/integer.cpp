@@ -443,7 +443,8 @@ void ExactArithmetic::Integer::intToDigits(unsigned long long i) {
 }
 
 std::pair<ExactArithmetic::Integer, ExactArithmetic::Integer> ExactArithmetic::Integer::divide(
-        const ExactArithmetic::Integer& divider) {
+        const ExactArithmetic::Integer& divider)
+{
     if (divider == 0) {
         throw ExactArithmetic::DivideByZeroError();
     }
