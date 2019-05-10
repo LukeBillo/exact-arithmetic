@@ -26,7 +26,7 @@ SCENARIO("Rationals can be constructed", "[rational]") {
              * Assumes that operator<< is
              * overloaded for Rational and that
              * this functions correctly.
-             * Tested in rationals-can-be-output.
+             * Tested in rationals-can-be-output.z
              */
             std::stringstream ss;
             ss << defaultRational;

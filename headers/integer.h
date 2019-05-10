@@ -4,6 +4,10 @@
 #include <list>
 #include <string>
 #include <iostream>
+#include <memory>
+
+#define ASCII_NUMBERS_START 48
+#define MAX_DIGIT 9
 
 namespace ExactArithmetic
 {
@@ -25,6 +29,9 @@ namespace ExactArithmetic
       // For any other input, throws a std::invalid_argument exception.
       // (For full integers, it should also allow an optional initial  '+' or '-' character.)
       explicit Integer(const std::string &);
+
+      // Copy constructor
+      Integer(const Integer&);
 
       //  Arithmetic Operators
       Integer operator+(const Integer &) const;
@@ -54,7 +61,10 @@ namespace ExactArithmetic
       Integer & operator--();  // pre-decrement
       Integer operator--(int); // post-decrement
 
+      // Utility methods for conversion
       std::string toString() const;
+      int toInt();
+      unsigned long long toInt64();
 
       // Friend declarations
       friend std::ostream & operator<<(std::ostream &, const Integer &);
@@ -62,9 +72,30 @@ namespace ExactArithmetic
 
     private:
       using Digit = short int;
+      using DigitList = std::list<Digit>;
+
+      enum ComparisonResult {
+          LT,
+          EQ,
+          GT
+      };
+
+      // Generic comparison function
+      ComparisonResult compare(const Integer&) const;
+
+      // Converts an integer and puts it into digits.
+      void intToDigits(unsigned long long);
+
+      // Removes leading zeros in the digits
+      // e.g. 0001 -> 1
+      void removeLeadingZeros();
+
+      // Division that returns both quotient and remainder
+      // returns std::pair<quotient, remainder>
+      std::pair<Integer, Integer> divide(const Integer &);
 
       // The integer is represented as a list of digits.
-      std::list<Digit> digits {};
+      std::unique_ptr<DigitList> digits = std::make_unique<std::list<Digit>>();
   };
 
   std::ostream & operator<<(std::ostream &, const Integer &);

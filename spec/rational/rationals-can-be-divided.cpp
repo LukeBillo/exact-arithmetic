@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 #include "rational.h"
-#include "helpers/RandomRationalGenerator.h"
+#include "../helpers/RandomRationalGenerator.h"
 #include "dividebyzeroerror.h"
 
 using ExactArithmetic::Rational;

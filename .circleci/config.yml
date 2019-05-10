@@ -10,10 +10,6 @@ jobs:
           command: 'apk add git'
 
       - run:
-          name: Install Git
-          command: 'apk add git'
-
-      - run:
           name: Install Catch2
           command: 'mkdir /Catch2 && git clone https://github.com/catchorg/Catch2.git /Catch2 && cmake /Catch2 -B/Catch2/build -H/Catch2 -DBUILD_TESTING=OFF && cmake --build /Catch2/build/ --target install'
 
@@ -29,11 +25,11 @@ jobs:
 
       - run:
           name: Run unit tests
-          command: './build/rational-tests'
+          command: './build/exact-arithmetic-tests'
 
       - run:
           name: Create artifacts
-          command: "mkdir /artifacts && cp ./build/bin/* /artifacts"
+          command: "mkdir /artifacts && cp ./build/bin/* /artifacts && cp ./build/lib/* /artifacts"
 
       - store_artifacts:
           path: /artifacts
