@@ -161,6 +161,8 @@ ExactArithmetic::Integer& ExactArithmetic::Integer::operator+=(const ExactArithm
                 carry = 1;
                 *thisIterator %= 10;
             }
+
+            ++thisIterator;
         }
     }
 

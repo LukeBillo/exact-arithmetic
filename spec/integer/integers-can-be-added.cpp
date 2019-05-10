@@ -55,6 +55,18 @@ SCENARIO("Integers can be added", "[integer]") {
                 REQUIRE(result == randomInteger);
             }
         }
+
+        WHEN("Adding 99999999999999999 and 1") {
+            Integer ridiculousInteger = Integer("99999999999999999");
+
+            THEN("The integers are added successfully") {
+                Integer &result = ridiculousInteger += 1;
+                Integer expected = Integer("100000000000000000");
+
+                REQUIRE(result == expected);
+                REQUIRE(ridiculousInteger == expected);
+            }
+        }
     }
 
     GIVEN("Integers have the operator+ implemented") {
