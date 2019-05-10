@@ -71,5 +71,17 @@ SCENARIO("Integers can be constructed", "[integer]") {
                 REQUIRE_THROWS_AS(Integer(randomString), std::invalid_argument);
             }
         }
+
+        WHEN("Constructing 0001 as a string") {
+            auto stringified = "0001";
+            Integer constructed = Integer(stringified);
+
+            THEN("The integer is successfully constructed") {
+                INFO("Integer constructed from string 0001: " << constructed)
+
+                REQUIRE(constructed.toString() == "1");
+                REQUIRE(constructed.toInt() == 1);
+            }
+        }
     }
 }

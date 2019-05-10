@@ -1,4 +1,5 @@
 #include <sstream>
+#include <dividebyzeroerror.h>
 #include "integer.h"
 
 //region Constructors
@@ -15,15 +16,7 @@ ExactArithmetic::Integer::Integer(unsigned long long int i) {
         return;
     }
 
-    // iterates in orders of 10, extracting the current digit
-    // with modulo and dividing; pushes to front so that the
-    // array of digits has most significant digit at the front.
-    while (i > 0) {
-        auto nextDigit = i % 10;
-        digits->push_front(nextDigit);
-
-        i /= 10;
-    }
+    intToDigits(i);
 }
 
 ExactArithmetic::Integer::Integer(const std::string& stringInt) {
@@ -43,10 +36,51 @@ ExactArithmetic::Integer::Integer(const std::string& stringInt) {
 
         digits->push_back(converted);
     }
+
+    removeLeadingZeros();
+
+    if (digits->empty()) {
+        digits->push_back(0);
+    }
+}
+
+ExactArithmetic::Integer::Integer(const ExactArithmetic::Integer& existing) {
+    digits = std::make_unique<DigitList>(*existing.digits);
 }
 
 #pragma endregion Constructors
 //endregion constructors
+
+//region ArithmeticOperators
+#pragma region ArithmeticOperators
+
+ExactArithmetic::Integer ExactArithmetic::Integer::operator+(const ExactArithmetic::Integer& addition) const {
+    // makes a copy of this to be used as a result
+    Integer result = *this;
+    result += addition;
+    return result;
+}
+
+ExactArithmetic::Integer ExactArithmetic::Integer::operator-(const ExactArithmetic::Integer& subtraction) const {
+    Integer result = *this;
+    result -= subtraction;
+    return result;
+}
+
+ExactArithmetic::Integer ExactArithmetic::Integer::operator/(const ExactArithmetic::Integer& divider) const {
+    Integer result = Integer(*this);
+    result /= divider;
+    return result;
+}
+
+ExactArithmetic::Integer ExactArithmetic::Integer::operator%(const ExactArithmetic::Integer& divider) const {
+    Integer result = Integer(*this);
+    result %= divider;
+    return result;
+}
+
+#pragma endregion ArithmeticOperators
+//endregion ArithmeticOperators
 
 //region ComparisonOperators
 #pragma region ComparisonOperators
@@ -77,6 +111,126 @@ bool ExactArithmetic::Integer::operator!=(const ExactArithmetic::Integer& other)
 
 #pragma endregion ComparisonOperators
 //endregion ComparisonOperators
+
+//region CompoundAssignmentOperators
+#pragma region CompoundAssignmentOperators
+
+ExactArithmetic::Integer& ExactArithmetic::Integer::operator+=(const ExactArithmetic::Integer& addition) {
+    auto thisIterator = digits->rbegin();
+    auto additionIterator = addition.digits->rbegin();
+
+    int carry = 0;
+
+    while (additionIterator != addition.digits->rend()) {
+        if (thisIterator == digits->rend())
+        {
+            digits->push_front(*additionIterator);
+            thisIterator = --digits->rend();
+        }
+        else
+        {
+            *thisIterator += *additionIterator;
+        }
+
+        *thisIterator += carry;
+        carry = 0;
+
+        if (*thisIterator > MAX_DIGIT) {
+            // carry is always 1 (*thisIterator / 10)
+            carry = 1;
+            *thisIterator %= 10;
+        }
+
+        ++additionIterator;
+        ++thisIterator;
+    }
+
+    while (carry != 0) {
+        if (thisIterator == digits->rend())
+        {
+            digits->push_front(carry);
+            carry = 0;
+        }
+        else
+        {
+            *thisIterator += carry;
+            carry = 0;
+
+            if (*thisIterator > MAX_DIGIT)
+            {
+                carry = 1;
+                *thisIterator %= 10;
+            }
+        }
+    }
+
+    return *this;
+}
+
+ExactArithmetic::Integer& ExactArithmetic::Integer::operator-=(const ExactArithmetic::Integer& subtraction) {
+    // check if result would be -ve or 0
+    if (subtraction >= *this) {
+        digits->clear();
+        digits->push_front(0);
+
+        return *this;
+    }
+
+    // else, need to subtract...
+    auto thisIterator = digits->rbegin();
+    auto subIterator = subtraction.digits->rbegin();
+
+    while (subIterator != subtraction.digits->rend()) {
+        if (*thisIterator >= *subIterator)
+        {
+            *thisIterator -= *subIterator;
+        }
+        else
+        {
+            // else, it is smaller...
+
+            // copy iterator
+            std::reverse_iterator next = thisIterator;
+            next++;
+
+            while (*next == 0) {
+                *next = MAX_DIGIT;
+                ++next;
+            }
+
+            *next -= 1;
+
+            *thisIterator += 10;
+            *thisIterator -= *subIterator;
+        }
+
+        ++thisIterator;
+        ++subIterator;
+    }
+
+    removeLeadingZeros();
+
+    return *this;
+}
+
+ExactArithmetic::Integer &ExactArithmetic::Integer::operator/=(const ExactArithmetic::Integer& divider) {
+    // pair<quotient, remainder>
+    std::pair<Integer, Integer> result = divide(divider);
+
+    digits = std::move(result.first.digits);
+    return *this;
+}
+
+ExactArithmetic::Integer &ExactArithmetic::Integer::operator%=(const ExactArithmetic::Integer& divider) {
+    // pair<quotient, remainder>
+    std::pair<Integer, Integer> result = divide(divider);
+
+    digits = std::move(result.second.digits);
+    return *this;
+}
+
+#pragma endregion CompoundAssignmentOperators
+//endregion CompoundAssignmentOperators
 
 //region IncrementDecrementOperators
 #pragma region IncrementDecrementOperators
@@ -227,8 +381,8 @@ std::istream &ExactArithmetic::operator>>(std::istream& is, ExactArithmetic::Int
 #pragma region FriendStreamOperators
 //endregion FriendStreamOperators
 
-//region GenericComparisonFunction
-#pragma region GenericComparisonFunction
+//region PrivateFunctions
+#pragma region PrivateFunctions
 
 ExactArithmetic::Integer::ComparisonResult ExactArithmetic::Integer::compare(const ExactArithmetic::Integer& other) const {
     auto mismatch = std::mismatch(
@@ -266,65 +420,44 @@ ExactArithmetic::Integer::ComparisonResult ExactArithmetic::Integer::compare(con
             GT;
 }
 
-ExactArithmetic::Integer& ExactArithmetic::Integer::operator+=(const ExactArithmetic::Integer& addition) {
-    auto thisIterator = digits->rbegin();
-    auto additionIterator = addition.digits->rbegin();
-
-    int carry = 0;
-
-    auto DEBUG_CURRENT_INTEGER = toString();
-    auto DEBUG_ADDITION_INTEGER = addition.toString();
-
-    while (additionIterator != addition.digits->rend()) {
-        if (thisIterator == digits->rend())
-        {
-            digits->push_front(*additionIterator);
-            thisIterator = --digits->rend();
-        }
-        else
-        {
-            *thisIterator += *additionIterator;
-        }
-
-        *thisIterator += carry;
-        carry = 0;
-
-        if (*thisIterator > MAX_DIGIT) {
-            // carry is always 1 (*thisIterator / 10)
-            carry = 1;
-            *thisIterator %= 10;
-        }
-
-        ++additionIterator;
-        ++thisIterator;
+void ExactArithmetic::Integer::removeLeadingZeros() {
+    while(!digits->empty() && digits->front() == 0) {
+        digits->pop_front();
     }
-
-    while (carry != 0) {
-        if (thisIterator == digits->rend())
-        {
-            digits->push_front(carry);
-            carry = 0;
-        }
-        else
-        {
-            *thisIterator += carry;
-            carry = 0;
-
-            if (*thisIterator > MAX_DIGIT)
-            {
-                carry = 1;
-                *thisIterator %= 10;
-            }
-        }
-    }
-
-    return *this;
 }
 
-ExactArithmetic::Integer& ExactArithmetic::Integer::operator-=(const ExactArithmetic::Integer &) {
-    // not implemented yet, throws exception temporarily
-    throw "NotImplementedException";
+void ExactArithmetic::Integer::intToDigits(unsigned long long i) {
+    // iterates in orders of 10, extracting the current digit
+    // with modulo and dividing; pushes to front so that the
+    // array of digits has most significant digit at the front.
+    digits->clear();
+
+    while (i > 0) {
+        auto nextDigit = i % 10;
+        digits->push_front(nextDigit);
+
+        i /= 10;
+    }
 }
 
-#pragma endregion GenericComparisonFunction
-//endregion GenericComparisonFunction
+std::pair<ExactArithmetic::Integer, ExactArithmetic::Integer> ExactArithmetic::Integer::divide(
+        const ExactArithmetic::Integer& divider) {
+    if (divider == 0) {
+        throw ExactArithmetic::DivideByZeroError();
+    }
+
+    if (*this < divider) {
+        return std::make_pair(0, *this);
+    }
+
+    int iterations = 0;
+    while (*this > divider) {
+        *this -= divider;
+        iterations++;
+    }
+
+    return std::make_pair(iterations, *this);
+}
+
+#pragma endregion PrivateFunctions
+//endregion PrivateFunctions
